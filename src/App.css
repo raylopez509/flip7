@@ -1,0 +1,20 @@
+.checkbox-card input {
+  display: none;
+}
+
+.box {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #888;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+input:checked + .box {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
