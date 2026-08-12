@@ -14,7 +14,74 @@
 }
 
 input:checked + .box {
-  background: #2563eb;
-  color: white;
-  border-color: #2563eb;
+  background: #fdb33c;
+  color: #e76055;
+  border-color: #fdb33c;
 }
+
+#zero:checked + .box {
+  background-color: #f5e3bd;
+  color: black;
+  border-color:#f5e3bd;
+}
+#one:checked + .box {
+  background-color: #cab09d;
+  color: black;
+  border-color: #cab09d;
+}
+#two:checked + .box {
+  background-color: #dfe023;
+  color: black;
+  border-color: #dfe023;
+}
+#three:checked + .box {
+  background-color: #e84f64;
+  color: black;
+  border-color: #e84f64;
+}
+#four:checked + .box {
+  background-color: #59b6c3;
+  color: black;
+  border-color: #59b6c3;
+}
+#five:checked + .box {
+  background-color: #3db54a;
+  color: black;
+  border-color: #3db54a;
+}
+#six:checked + .box {
+  background-color: #bb51a0;
+  color: black;
+  border-color: #bb51a0;
+}
+#seven:checked + .box {
+  background-color: #e17e82;
+  color: black;
+  border-color: #e17e82;
+}
+#eight:checked + .box {
+  background-color: #b4d97f;
+  color: black;
+  border-color: #b4d97f;
+}
+#nine:checked + .box {
+  background-color: #f7951e;
+  color: black;
+  border-color: #f7951e;
+}
+#ten:checked + .box {
+  background-color: #ea2126;
+  color: black;
+  border-color: #ea2126;
+}
+#eleven:checked + .box {
+  background-color: #7fa1d8;
+  color: black;
+  border-color: #7fa1d8;
+}
+#twelve:checked + .box {
+  background-color: #998776;
+  color: black;
+  border-color: #998776;
+}
+
