@@ -6,108 +6,188 @@ import './App.css'
 
 function App() {
 
-  const [checkedBoxes, setCheckedBoxes] = useState([]);
-  const [checkedModifiers, setCheckedModifiers] = useState({
-    plus2: false,
-    plus4: false,
-    plus6: false,
-    plus8: false,
-    plus10: false,
-    times2: false
+  const [currentRound, setCurrentRound] = useState(1);
+  const [player, setPlayer] = useState({
+    name: "ray",
+    round: {
+      1: {
+        numbers: [],
+        modifiers: {
+          plus2: false,
+          plus4: false,
+          plus6: false,
+          plus8: false,
+          plus10: false,
+          times2: false,
+        }
+      }
+    }
   });
 
   const handleChange = (e) => {
     const target = e.target;
     const value = Number(target.value);
-    const newCheckedBoxes = target.checked ? [...checkedBoxes,value] : checkedBoxes.filter((num) => num !== value);
-    setCheckedBoxes(newCheckedBoxes);
+    const newNumbers = target.checked ? [...player.round[currentRound].numbers, value] 
+     : player.round[currentRound].numbers.filter((num) => num !== value);
+
+    console.log(newNumbers)
+    const newPlayer = {
+      ...player,
+      round: {
+        ...player.round,
+        [currentRound]: {
+          ...player.round[currentRound],
+          numbers: newNumbers
+        } 
+      }
+    }
+
+    console.log(newPlayer);
+    setPlayer(newPlayer);
+
   }
 
   const handleModifierChanges = (e) => {
     const target = e.target;
     const id = target.id;
     const checked = target.checked;
-    const newCheckedModifiers = {...checkedModifiers, [id]: checked};
-    setCheckedModifiers(newCheckedModifiers);
+    const newModifiers = {...player.round[currentRound].modifiers, [id]: checked}
+    console.log(newModifiers)
+    const newPlayer = {
+      ...player,
+      round: {
+        ...player.round,
+        [currentRound]: {
+          ...player.round[currentRound],
+          modifiers: newModifiers
+        } 
+      }
+    }
+    console.log(newPlayer);
+    setPlayer(newPlayer);
+  }
+  
+  const getFinalScore = () => {
+    let score = 0;
+    Object.keys(player.round).forEach((roundNum) => {
+      score += getRoundScore(roundNum);
+    });
+    return score;
   }
 
-  const getScore = () => {
+  const getRoundScore = (roundNum) => {
     let score = 0;
-    checkedBoxes.forEach((value) => { 
+    player.round[roundNum].numbers.forEach((value) => {
       score += value;
     });
 
-    if(checkedModifiers.times2) {
+    if(player.round[roundNum].modifiers.times2) {
       score *= 2;
     }
 
     let modifierScore =
-      (checkedModifiers.plus2 ? 2 : 0) +
-      (checkedModifiers.plus4 ? 4 : 0) +
-      (checkedModifiers.plus6 ? 6 : 0) +
-      (checkedModifiers.plus8 ? 8 : 0) +
-      (checkedModifiers.plus10 ? 10 : 0);
+      (player.round[roundNum].modifiers.plus2 ? 2 : 0) +
+      (player.round[roundNum].modifiers.plus4 ? 4 : 0) +
+      (player.round[roundNum].modifiers.plus6 ? 6 : 0) +
+      (player.round[roundNum].modifiers.plus8 ? 8 : 0) +
+      (player.round[roundNum].modifiers.plus10 ? 10 : 0);
     score += modifierScore
 
-    if (checkedBoxes.length >= 7) {
+    if (player.round[roundNum].numbers.length >= 7) {
       score += 15
     }
     return score;
   }
+
+  const nextRound = () => {
+    let newRound = currentRound + 1
+
+    
+    let newPlayer = {...player, round: {
+      ...player.round,
+      [newRound]: {
+        numbers: [],
+        modifiers: {
+          plus2: false,
+          plus4: false,
+          plus6: false,
+          plus8: false,
+          plus10: false,
+          times2: false,
+        }
+      }
+    }}
+    setPlayer(newPlayer);
+
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(cb => {
+      cb.checked = false;
+    })
+
+    setCurrentRound(newRound);
+
+  }
+
+  // const prevRound = () => {
+  //   let newRound = currentRound - 1;
+  // }
+
+
   
   return (
     <>
+      <div>Round {currentRound}</div>
       <div>ray</div>
       <label className='checkbox-card'>
-        <input type='checkbox' id='0' value='0' onChange={handleChange}></input>
+        <input type='checkbox' id='zero' value='0' onChange={handleChange}></input>
         <span className='box'>0</span>
       </label>
       <label className='checkbox-card'>
-        <input type='checkbox' id='1' value='1' onChange={handleChange}></input>
+        <input type='checkbox' id='one' value='1' onChange={handleChange}></input>
         <span className='box'>1</span>
       </label>
       <label className='checkbox-card'>
-        <input type='checkbox' id='2' value='2' onChange={handleChange}></input>
+        <input type='checkbox' id='two' value='2' onChange={handleChange}></input>
         <span className='box'>2</span>
       </label>
       <label className='checkbox-card'>
-        <input type='checkbox' id='3' value='3' onChange={handleChange}></input>
+        <input type='checkbox' id='three' value='3' onChange={handleChange}></input>
         <span className='box'>3</span>
       </label>
       <label className='checkbox-card'>
-        <input type='checkbox' id='4' value='4' onChange={handleChange}></input>
+        <input type='checkbox' id='four' value='4' onChange={handleChange}></input>
         <span className='box'>4</span>
       </label>
       <label className='checkbox-card'>
-        <input type='checkbox' id='5' value='5' onChange={handleChange}></input>
+        <input type='checkbox' id='five' value='5' onChange={handleChange}></input>
         <span className='box'>5</span>
       </label>
       <label className='checkbox-card'>
-        <input type='checkbox' id='6' value='6' onChange={handleChange}></input>
+        <input type='checkbox' id='six' value='6' onChange={handleChange}></input>
         <span className='box'>6</span>
       </label>
       <label className='checkbox-card'>
-        <input type='checkbox' id='7' value='7' onChange={handleChange}></input>
+        <input type='checkbox' id='seven' value='7' onChange={handleChange}></input>
         <span className='box'>7</span>
       </label>
       <label className='checkbox-card'>
-        <input type='checkbox' id='8' value='8' onChange={handleChange}></input>
+        <input type='checkbox' id='eight' value='8' onChange={handleChange}></input>
         <span className='box'>8</span>
       </label>
       <label className='checkbox-card'>
-        <input type='checkbox' id='9' value='9' onChange={handleChange}></input>
+        <input type='checkbox' id='nine' value='9' onChange={handleChange}></input>
         <span className='box'>9</span>
       </label>
       <label className='checkbox-card'>
-        <input type='checkbox' id='10' value='10' onChange={handleChange}></input>
+        <input type='checkbox' id='ten' value='10' onChange={handleChange}></input>
         <span className='box'>10</span>
       </label>
       <label className='checkbox-card'>
-        <input type='checkbox' id='11' value='11' onChange={handleChange}></input>
+        <input type='checkbox' id='eleven' value='11' onChange={handleChange}></input>
         <span className='box'>11</span>
       </label>
       <label className='checkbox-card'>
-        <input type='checkbox' id='12' value='12' onChange={handleChange}></input>
+        <input type='checkbox' id='twelve' value='12' onChange={handleChange}></input>
         <span className='box'>12</span>
       </label>
 
@@ -135,9 +215,11 @@ function App() {
         <input type='checkbox' id='times2' onChange={handleModifierChanges}></input>
         <span className='box'>x2</span>
       </label>
-      
-      <div>{getScore()}</div>
+      <div>{getFinalScore()}</div>
+      <div>{getRoundScore(currentRound)}</div>
 
+      <button>&lt;</button>
+      <button onClick={nextRound}>&gt;</button>
     </>
   )
 }
