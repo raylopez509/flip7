@@ -82,6 +82,29 @@ function App() {
     let newRound = currentRound - 1;
     setCurrentRound(newRound);
   }
+
+  const handleAddPlayer = () => {
+
+    const name = window.prompt("Enter a name");
+    if(name !== null && name.trim() !== "") {
+      const newId = players.at(-1).id + 1;
+      console.log(newId);
+      let newPlayer = {
+        id: newId,
+        name: name,
+        round: {
+          // 1: createEmptyRound()
+        }
+      };
+      let round = 0;
+      while (currentRound !== round) {
+        round++;
+        const newRound = {[round]: createEmptyRound()}
+        Object.assign(newPlayer.round, newRound);
+      }
+      setPlayers([...players, newPlayer]);
+    }
+  }
   
   return (
     <>
@@ -90,7 +113,7 @@ function App() {
       <button id='prevRound' onClick={prevRound} disabled={currentRound === 1}>&lt;</button>
       <button onClick={nextRound}>&gt;</button>
 
-      <button>Add Player</button>
+      <button onClick={handleAddPlayer}>Add Player</button>
       
       {players.map((player) => (
         <PlayerRow key={player.id} player={player} currentRound={currentRound} handleChange={handleChange} handleModifierChanges={handleModifierChanges}></PlayerRow>
