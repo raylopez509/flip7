@@ -19,67 +19,67 @@ input:checked + .box {
   border-color: #fdb33c;
 }
 
-#zero:checked + .box {
+.number-0:checked + .box {
   background-color: #f5e3bd;
   color: black;
   border-color:#f5e3bd;
 }
-#one:checked + .box {
+.number-1:checked + .box {
   background-color: #cab09d;
   color: black;
   border-color: #cab09d;
 }
-#two:checked + .box {
+.number-2:checked + .box {
   background-color: #dfe023;
   color: black;
   border-color: #dfe023;
 }
-#three:checked + .box {
+.number-3:checked + .box {
   background-color: #e84f64;
   color: black;
   border-color: #e84f64;
 }
-#four:checked + .box {
+.number-4:checked + .box {
   background-color: #59b6c3;
   color: black;
   border-color: #59b6c3;
 }
-#five:checked + .box {
+.number-5:checked + .box {
   background-color: #3db54a;
   color: black;
   border-color: #3db54a;
 }
-#six:checked + .box {
+.number-6:checked + .box {
   background-color: #bb51a0;
   color: black;
   border-color: #bb51a0;
 }
-#seven:checked + .box {
+.number-7:checked + .box {
   background-color: #e17e82;
   color: black;
   border-color: #e17e82;
 }
-#eight:checked + .box {
+.number-8:checked + .box {
   background-color: #b4d97f;
   color: black;
   border-color: #b4d97f;
 }
-#nine:checked + .box {
+.number-9:checked + .box {
   background-color: #f7951e;
   color: black;
   border-color: #f7951e;
 }
-#ten:checked + .box {
+.number-10:checked + .box {
   background-color: #ea2126;
   color: black;
   border-color: #ea2126;
 }
-#eleven:checked + .box {
+.number-11:checked + .box {
   background-color: #7fa1d8;
   color: black;
   border-color: #7fa1d8;
 }
-#twelve:checked + .box {
+.number-12:checked + .box {
   background-color: #998776;
   color: black;
   border-color: #998776;
