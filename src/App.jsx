@@ -90,7 +90,6 @@ function App() {
     const name = window.prompt('Enter a name');
     if (name !== null && name.trim() !== '') {
       const newId = players.length === 0 ? 1 : players.at(-1).id + 1;
-      console.log(newId);
       let newPlayer = {
         id: newId,
         name: name,
@@ -113,6 +112,58 @@ function App() {
     setPlayers(newPlayers);
   };
 
+  const getRoundScore = (player, roundNum) => {
+    let score = 0;
+    player.round[roundNum].numbers.forEach((value) => {
+      score += value;
+    });
+
+    if (player.round[roundNum].modifiers.times2) {
+      score *= 2;
+    }
+
+    let modifierScore =
+      (player.round[roundNum].modifiers.plus2 ? 2 : 0) +
+      (player.round[roundNum].modifiers.plus4 ? 4 : 0) +
+      (player.round[roundNum].modifiers.plus6 ? 6 : 0) +
+      (player.round[roundNum].modifiers.plus8 ? 8 : 0) +
+      (player.round[roundNum].modifiers.plus10 ? 10 : 0);
+    score += modifierScore;
+
+    if (player.round[roundNum].numbers.length >= 7) {
+      score += 15;
+    }
+    return score;
+  };
+
+  const getFinalScore = (player) => {
+    let score = 0;
+    Object.keys(player.round).forEach((roundNum) => {
+      score += getRoundScore(player, roundNum);
+    });
+    return score;
+  };
+
+  const showScoreBoard = () => {
+    let scores = {}
+    players.forEach((player) => {
+      scores[player.name] = getFinalScore(player);
+    });
+    console.log(scores);
+    return scores;
+  }
+
+  const resetScores = () => {
+    setCurrentRound(1);
+    let resetPlayers = [...players];
+    resetPlayers.forEach((player) => {
+      player.round = {
+        1: createEmptyRound()
+      }
+    });
+    setPlayers(resetPlayers);
+  }
+
   return (
     <>
       <div>Round {currentRound}</div>
@@ -126,6 +177,10 @@ function App() {
 
       <button onClick={handleAddPlayer}>Add Player</button>
 
+      <button onClick={showScoreBoard}>Show Scores</button>
+
+      <button onClick={() => resetScores()}>Reset</button>
+
       {players.map((player) => (
         <PlayerRow
           key={player.id}
@@ -134,8 +189,12 @@ function App() {
           handleChange={handleChange}
           handleModifierChanges={handleModifierChanges}
           deletePlayer={deletePlayer}
+          getRoundScore={getRoundScore}
+          getFinalScore={getFinalScore}
         ></PlayerRow>
-      ))}
+      ))} 
+      
+
     </>
   );
 }
