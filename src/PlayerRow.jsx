@@ -4,6 +4,8 @@ export default function PlayerRow({
   handleChange,
   handleModifierChanges,
   deletePlayer,
+  getRoundScore,
+  getFinalScore
 }) {
   const currentRoundData = player.round[currentRound];
   const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -16,41 +18,41 @@ export default function PlayerRow({
     { key: 'times2', label: 'x2' },
   ];
 
-  const getFinalScore = () => {
-    let score = 0;
-    Object.keys(player.round).forEach((roundNum) => {
-      score += getRoundScore(roundNum);
-    });
-    return score;
-  };
+  // const getFinalScore = () => {
+  //   let score = 0;
+  //   Object.keys(player.round).forEach((roundNum) => {
+  //     score += getRoundScore(roundNum);
+  //   });
+  //   return score;
+  // };
 
-  const getRoundScore = (roundNum) => {
-    let score = 0;
-    player.round[roundNum].numbers.forEach((value) => {
-      score += value;
-    });
+  // const getRoundScore = (roundNum) => {
+  //   let score = 0;
+  //   player.round[roundNum].numbers.forEach((value) => {
+  //     score += value;
+  //   });
 
-    if (player.round[roundNum].modifiers.times2) {
-      score *= 2;
-    }
+  //   if (player.round[roundNum].modifiers.times2) {
+  //     score *= 2;
+  //   }
 
-    let modifierScore =
-      (player.round[roundNum].modifiers.plus2 ? 2 : 0) +
-      (player.round[roundNum].modifiers.plus4 ? 4 : 0) +
-      (player.round[roundNum].modifiers.plus6 ? 6 : 0) +
-      (player.round[roundNum].modifiers.plus8 ? 8 : 0) +
-      (player.round[roundNum].modifiers.plus10 ? 10 : 0);
-    score += modifierScore;
+  //   let modifierScore =
+  //     (player.round[roundNum].modifiers.plus2 ? 2 : 0) +
+  //     (player.round[roundNum].modifiers.plus4 ? 4 : 0) +
+  //     (player.round[roundNum].modifiers.plus6 ? 6 : 0) +
+  //     (player.round[roundNum].modifiers.plus8 ? 8 : 0) +
+  //     (player.round[roundNum].modifiers.plus10 ? 10 : 0);
+  //   score += modifierScore;
 
-    if (player.round[roundNum].numbers.length >= 7) {
-      score += 15;
-    }
-    return score;
-  };
+  //   if (player.round[roundNum].numbers.length >= 7) {
+  //     score += 15;
+  //   }
+  //   return score;
+  // };
 
   return (
     <div className="player-row">
-      <div>{player.name}</div>
+      <div>{player.name}: {getFinalScore(player)}</div>
       {numbers.map((n) => (
         <label className="checkbox-card" key={n}>
           <input
@@ -75,8 +77,7 @@ export default function PlayerRow({
         </label>
       ))}
       <button onClick={() => deletePlayer(player.id)}>Delete</button>
-      <div>{getFinalScore()}</div>
-      <div>{getRoundScore(currentRound)}</div>
+      <div>{getRoundScore(player, currentRound)}</div>
     </div>
   );
 }
