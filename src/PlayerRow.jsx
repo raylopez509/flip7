@@ -1,7 +1,13 @@
-export default function PlayerRow({player, currentRound, handleChange, handleModifierChanges}) {
+export default function PlayerRow({
+  player,
+  currentRound,
+  handleChange,
+  handleModifierChanges,
+  deletePlayer,
+}) {
   const currentRoundData = player.round[currentRound];
-  const numbers = [0,1,2,3,4,5,6,7,8,9,10,11,12];
-   const modifiers = [
+  const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const modifiers = [
     { key: 'plus2', label: '+2' },
     { key: 'plus4', label: '+4' },
     { key: 'plus6', label: '+6' },
@@ -16,7 +22,7 @@ export default function PlayerRow({player, currentRound, handleChange, handleMod
       score += getRoundScore(roundNum);
     });
     return score;
-  }
+  };
 
   const getRoundScore = (roundNum) => {
     let score = 0;
@@ -24,7 +30,7 @@ export default function PlayerRow({player, currentRound, handleChange, handleMod
       score += value;
     });
 
-    if(player.round[roundNum].modifiers.times2) {
+    if (player.round[roundNum].modifiers.times2) {
       score *= 2;
     }
 
@@ -34,31 +40,43 @@ export default function PlayerRow({player, currentRound, handleChange, handleMod
       (player.round[roundNum].modifiers.plus6 ? 6 : 0) +
       (player.round[roundNum].modifiers.plus8 ? 8 : 0) +
       (player.round[roundNum].modifiers.plus10 ? 10 : 0);
-    score += modifierScore
+    score += modifierScore;
 
     if (player.round[roundNum].numbers.length >= 7) {
-      score += 15
+      score += 15;
     }
     return score;
-  }
+  };
 
   return (
     <div className="player-row">
       <div>{player.name}</div>
       {numbers.map((n) => (
-        <label className='checkbox-card' key={n} >
-          <input className={`number-${n}`} type='checkbox' value={n} checked={currentRoundData.numbers.includes(n)} onChange={(e) => handleChange(player.id, e)}></input>
-          <span className='box'>{n}</span>
+        <label className="checkbox-card" key={n}>
+          <input
+            className={`number-${n}`}
+            type="checkbox"
+            value={n}
+            checked={currentRoundData.numbers.includes(n)}
+            onChange={(e) => handleChange(player.id, e)}
+          ></input>
+          <span className="box">{n}</span>
         </label>
       ))}
-      {modifiers.map(({key, label}) => (
-        <label className='checkbox-card' key={key}>
-          <input type='checkbox' value='2' checked={currentRoundData.modifiers[key]} onChange={(e) => handleModifierChanges(player.id, key, e)}></input>
-          <span className='box'>{label}</span>
+      {modifiers.map(({ key, label }) => (
+        <label className="checkbox-card" key={key}>
+          <input
+            type="checkbox"
+            value="2"
+            checked={currentRoundData.modifiers[key]}
+            onChange={(e) => handleModifierChanges(player.id, key, e)}
+          ></input>
+          <span className="box">{label}</span>
         </label>
       ))}
+      <button onClick={() => deletePlayer(player.id)}>Delete</button>
       <div>{getFinalScore()}</div>
       <div>{getRoundScore(currentRound)}</div>
     </div>
-  )
+  );
 }

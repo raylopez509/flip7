@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import PlayerRow from './PlayerRow';
 
@@ -14,16 +14,15 @@ function App() {
       times2: false,
     },
   });
+  const savedPlayers = localStorage.getItem('players');
+
   const [currentRound, setCurrentRound] = useState(1);
-  const [players, setPlayers] = useState([
-    // {
-    //   id: 1,
-    //   name: 'ray',
-    //   round: {
-    //     1: createEmptyRound(),
-    //   },
-    // },
-  ]);
+  const [players, setPlayers] = useState(
+    savedPlayers ? JSON.parse(savedPlayers) : [],
+  );
+  useEffect(() => {
+    localStorage.setItem('players', JSON.stringify(players));
+  }, [players]);
 
   const updatePlayer = (playerId, updateFn) => {
     setPlayers(players.map((p) => (p.id === playerId ? updateFn(p) : p)));
@@ -109,6 +108,11 @@ function App() {
     }
   };
 
+  const deletePlayer = (id) => {
+    const newPlayers = [...players].filter((player) => player.id !== id);
+    setPlayers(newPlayers);
+  };
+
   return (
     <>
       <div>Round {currentRound}</div>
@@ -129,6 +133,7 @@ function App() {
           currentRound={currentRound}
           handleChange={handleChange}
           handleModifierChanges={handleModifierChanges}
+          deletePlayer={deletePlayer}
         ></PlayerRow>
       ))}
     </>
