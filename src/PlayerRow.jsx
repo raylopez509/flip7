@@ -1,3 +1,6 @@
+import { createPortal } from "react-dom";
+import ConfirmModal from "./ConfirmModal";
+import { useState } from "react";
 export default function PlayerRow({
   player,
   currentRound,
@@ -17,6 +20,7 @@ export default function PlayerRow({
     { key: 'plus10', label: '+10' },
     { key: 'times2', label: 'x2' },
   ];
+  const [showModal, setShowModal] = useState(false);
 
   // const getFinalScore = () => {
   //   let score = 0;
@@ -76,7 +80,20 @@ export default function PlayerRow({
           <span className="box">{label}</span>
         </label>
       ))}
-      <button onClick={() => deletePlayer(player.id)}>Delete</button>
+      <button onClick={() => setShowModal(true)}>Delete</button>
+      {
+        showModal && createPortal(
+          <ConfirmModal
+            message={`Are you sure you want to delete ${player.name}?`}
+            onConfirm={() => {
+              deletePlayer(player.id);
+              setShowModal(false);
+            }}
+            onClose={() => setShowModal(false)}
+          ></ConfirmModal>,
+          document.body
+        )
+      }
       <div>{getRoundScore(player, currentRound)}</div>
     </div>
   );

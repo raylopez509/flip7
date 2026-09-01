@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import PlayerRow from './PlayerRow';
 import ScoreboardButton from './ScoreboardButton';
+import ConfirmModal from './ConfirmModal';
+import { createPortal } from 'react-dom';
 
 function App() {
   const createEmptyRound = () => ({
@@ -21,6 +23,7 @@ function App() {
   const [players, setPlayers] = useState(
     savedPlayers ? JSON.parse(savedPlayers) : [],
   );
+  const [showConfirmModal, setConfirmModal] = useState(false);
   useEffect(() => {
     localStorage.setItem('players', JSON.stringify(players));
   }, [players]);
@@ -165,6 +168,8 @@ function App() {
     setPlayers(resetPlayers);
   };
 
+
+
   return (
     <>
       <div>Round {currentRound}</div>
@@ -178,11 +183,23 @@ function App() {
 
       <button onClick={handleAddPlayer}>Add Player</button>
 
-      {/* <button onClick={showScoreBoard}>Show Scores</button> */}
-
       <ScoreboardButton showScoreBoard={showScoreBoard}></ScoreboardButton>
 
-      <button onClick={() => resetScores()}>Reset</button>
+      <button onClick={() => setConfirmModal(true)}>Reset</button>
+      {
+        showConfirmModal && createPortal(
+          <ConfirmModal
+            message="Are you sure you want to reset the scores?"
+            onConfirm={() => {
+              resetScores();
+              setConfirmModal(false);
+              }
+            }
+            onClose={() => setConfirmModal(false)}
+          ></ConfirmModal>,
+          document.body
+        )
+      }
 
       {players.map((player) => (
         <PlayerRow
