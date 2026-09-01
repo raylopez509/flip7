@@ -3,6 +3,7 @@ import './App.css';
 import PlayerRow from './PlayerRow';
 import ScoreboardButton from './ScoreboardButton';
 import ConfirmModal from './ConfirmModal';
+import AddPlayerModal from './AddPlayerModal';
 import { createPortal } from 'react-dom';
 
 function App() {
@@ -24,6 +25,8 @@ function App() {
     savedPlayers ? JSON.parse(savedPlayers) : [],
   );
   const [showConfirmModal, setConfirmModal] = useState(false);
+  const [showAddPlayerModal, setShowAddPlayerModal] = useState(false);
+
   useEffect(() => {
     localStorage.setItem('players', JSON.stringify(players));
   }, [players]);
@@ -90,27 +93,6 @@ function App() {
     setCurrentRound(newRound);
   };
 
-  const handleAddPlayer = () => {
-    const name = window.prompt('Enter a name');
-    if (name !== null && name.trim() !== '') {
-      const newId = players.length === 0 ? 1 : players.at(-1).id + 1;
-      let newPlayer = {
-        id: newId,
-        name: name,
-        round: {
-          // 1: createEmptyRound()
-        },
-      };
-      let round = 0;
-      while (currentRound !== round) {
-        round++;
-        const newRound = { [round]: createEmptyRound() };
-        Object.assign(newPlayer.round, newRound);
-      }
-      setPlayers([...players, newPlayer]);
-    }
-  };
-
   const deletePlayer = (id) => {
     const newPlayers = [...players].filter((player) => player.id !== id);
     setPlayers(newPlayers);
@@ -168,7 +150,25 @@ function App() {
     setPlayers(resetPlayers);
   };
 
-
+  const handleAddNewPlayer = (name) => {
+    if (name !== null && name.trim() !== '') {
+      const newId = players.length === 0 ? 1 : players.at(-1).id + 1;
+      let newPlayer = {
+        id: newId,
+        name: name,
+        round: {
+          // 1: createEmptyRound()
+        },
+      };
+      let round = 0;
+      while (currentRound !== round) {
+        round++;
+        const newRound = { [round]: createEmptyRound() };
+        Object.assign(newPlayer.round, newRound);
+      }
+      setPlayers([...players, newPlayer]);
+    }
+  };
 
   return (
     <>
@@ -181,7 +181,16 @@ function App() {
         &gt;
       </button>
 
-      <button onClick={handleAddPlayer}>Add Player</button>
+      <button onClick={() => setShowAddPlayerModal(true)}>Add Player</button>
+      {
+        showAddPlayerModal && createPortal(
+          <AddPlayerModal
+          onClose={() => setShowAddPlayerModal(false)}
+          handleAddNewPlayer={handleAddNewPlayer}
+          ></AddPlayerModal>,
+          document.body
+        )
+      }
 
       <ScoreboardButton showScoreBoard={showScoreBoard}></ScoreboardButton>
 
