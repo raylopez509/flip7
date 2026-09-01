@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import PlayerRow from './PlayerRow';
+import ScoreboardButton from './ScoreboardButton';
 
 function App() {
   const createEmptyRound = () => ({
@@ -145,24 +146,24 @@ function App() {
   };
 
   const showScoreBoard = () => {
-    let scores = {}
+    let scores = {};
     players.forEach((player) => {
       scores[player.name] = getFinalScore(player);
     });
     console.log(scores);
     return scores;
-  }
+  };
 
   const resetScores = () => {
     setCurrentRound(1);
     let resetPlayers = [...players];
     resetPlayers.forEach((player) => {
       player.round = {
-        1: createEmptyRound()
-      }
+        1: createEmptyRound(),
+      };
     });
     setPlayers(resetPlayers);
-  }
+  };
 
   return (
     <>
@@ -177,7 +178,9 @@ function App() {
 
       <button onClick={handleAddPlayer}>Add Player</button>
 
-      <button onClick={showScoreBoard}>Show Scores</button>
+      {/* <button onClick={showScoreBoard}>Show Scores</button> */}
+
+      <ScoreboardButton showScoreBoard={showScoreBoard}></ScoreboardButton>
 
       <button onClick={() => resetScores()}>Reset</button>
 
@@ -192,9 +195,7 @@ function App() {
           getRoundScore={getRoundScore}
           getFinalScore={getFinalScore}
         ></PlayerRow>
-      ))} 
-      
-
+      ))}
     </>
   );
 }
