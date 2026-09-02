@@ -1,7 +1,10 @@
-import { useState } from 'react';
-import { createPortal } from 'react-dom';
-import ScoreboardModal from './ScoreboardModal.jsx';
-export default function ScoreboardButton({ showScoreBoard }) {
+import { useState } from "react";
+import { createPortal } from "react-dom";
+import ScoreboardModal from "./ScoreboardModal.jsx";
+export default function ScoreboardButton({
+  getRoundsArray,
+  getAllPlayerRoundScores,
+}) {
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -11,7 +14,8 @@ export default function ScoreboardButton({ showScoreBoard }) {
         createPortal(
           <ScoreboardModal
             onClose={() => setShowModal(false)}
-            showScoreBoard={showScoreBoard}
+            getRoundsArray={getRoundsArray}
+            getAllPlayerRoundScores={getAllPlayerRoundScores}
           ></ScoreboardModal>,
           document.body,
         )}
