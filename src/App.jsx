@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import './App.css';
-import PlayerRow from './PlayerRow';
-import ScoreboardButton from './ScoreboardButton';
-import ConfirmModal from './ConfirmModal';
-import AddPlayerModal from './AddPlayerModal';
-import { createPortal } from 'react-dom';
+import { useEffect, useState } from "react";
+import "./App.css";
+import PlayerRow from "./PlayerRow";
+import ScoreboardButton from "./ScoreboardButton";
+import ConfirmModal from "./ConfirmModal";
+import AddPlayerModal from "./AddPlayerModal";
+import { createPortal } from "react-dom";
 
 function App() {
   const createEmptyRound = () => ({
@@ -18,9 +18,16 @@ function App() {
       times2: false,
     },
   });
-  const savedPlayers = localStorage.getItem('players');
+  const savedPlayers = localStorage.getItem("players");
+  const savedCurrentRound = localStorage.getItem("currentRound");
+  const savedmaxRounds = localStorage.getItem("maxRounds");
 
-  const [currentRound, setCurrentRound] = useState(1);
+  const [currentRound, setCurrentRound] = useState(
+    savedCurrentRound ? Number(savedCurrentRound) : 1,
+  );
+  const [maxRounds, setMaxRounds] = useState(
+    savedmaxRounds ? Number(savedmaxRounds) : 1,
+  );
   const [players, setPlayers] = useState(
     savedPlayers ? JSON.parse(savedPlayers) : [],
   );
@@ -28,8 +35,16 @@ function App() {
   const [showAddPlayerModal, setShowAddPlayerModal] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('players', JSON.stringify(players));
+    localStorage.setItem("players", JSON.stringify(players));
   }, [players]);
+
+  useEffect(() => {
+    localStorage.setItem("currentRound", currentRound);
+  }, [currentRound]);
+
+  useEffect(() => {
+    localStorage.setItem("maxRounds", maxRounds);
+  }, [maxRounds]);
 
   const updatePlayer = (playerId, updateFn) => {
     setPlayers(players.map((p) => (p.id === playerId ? updateFn(p) : p)));
@@ -86,6 +101,10 @@ function App() {
       setPlayers(newPlayers);
     }
     setCurrentRound(newRound);
+    if (newRound > maxRounds) {
+      setMaxRounds(newRound);
+    }
+    console.log(players);
   };
 
   const prevRound = () => {
@@ -130,17 +149,9 @@ function App() {
     return score;
   };
 
-  const showScoreBoard = () => {
-    let scores = {};
-    players.forEach((player) => {
-      scores[player.name] = getFinalScore(player);
-    });
-    console.log(scores);
-    return scores;
-  };
-
   const resetScores = () => {
     setCurrentRound(1);
+    setMaxRounds(1);
     let resetPlayers = [...players];
     resetPlayers.forEach((player) => {
       player.round = {
@@ -151,7 +162,7 @@ function App() {
   };
 
   const handleAddNewPlayer = (name) => {
-    if (name !== null && name.trim() !== '') {
+    if (name !== null && name.trim() !== "") {
       const newId = players.length === 0 ? 1 : players.at(-1).id + 1;
       let newPlayer = {
         id: newId,
@@ -161,13 +172,40 @@ function App() {
         },
       };
       let round = 0;
-      while (currentRound !== round) {
+      while (maxRounds !== round) {
         round++;
         const newRound = { [round]: createEmptyRound() };
         Object.assign(newPlayer.round, newRound);
       }
       setPlayers([...players, newPlayer]);
     }
+  };
+
+  const getAllRoundScores = (player) => {
+    let scores = [];
+    scores.push(player.name);
+    Object.keys(player.round).forEach((roundNum) => {
+      scores.push(getRoundScore(player, roundNum));
+    });
+    scores.push(getFinalScore(player));
+    return scores;
+  };
+
+  const getRoundsArray = () => {
+    let rounds = [];
+    for (let i = 1; i <= maxRounds; i++) {
+      rounds.push(i);
+    }
+    return rounds;
+  };
+
+  const getAllPlayerRoundScores = () => {
+    let scores = [];
+    players.forEach((player) => {
+      scores.push(getAllRoundScores(player));
+    });
+    scores.sort((a, b) => b.at(-1) - a.at(-1));
+    return scores;
   };
 
   return (
@@ -182,33 +220,33 @@ function App() {
       </button>
 
       <button onClick={() => setShowAddPlayerModal(true)}>Add Player</button>
-      {
-        showAddPlayerModal && createPortal(
+      {showAddPlayerModal &&
+        createPortal(
           <AddPlayerModal
-          onClose={() => setShowAddPlayerModal(false)}
-          handleAddNewPlayer={handleAddNewPlayer}
+            onClose={() => setShowAddPlayerModal(false)}
+            handleAddNewPlayer={handleAddNewPlayer}
           ></AddPlayerModal>,
-          document.body
-        )
-      }
+          document.body,
+        )}
 
-      <ScoreboardButton showScoreBoard={showScoreBoard}></ScoreboardButton>
+      <ScoreboardButton
+        getRoundsArray={getRoundsArray}
+        getAllPlayerRoundScores={getAllPlayerRoundScores}
+      ></ScoreboardButton>
 
       <button onClick={() => setConfirmModal(true)}>Reset</button>
-      {
-        showConfirmModal && createPortal(
+      {showConfirmModal &&
+        createPortal(
           <ConfirmModal
             message="Are you sure you want to reset the scores?"
             onConfirm={() => {
               resetScores();
               setConfirmModal(false);
-              }
-            }
+            }}
             onClose={() => setConfirmModal(false)}
           ></ConfirmModal>,
-          document.body
-        )
-      }
+          document.body,
+        )}
 
       {players.map((player) => (
         <PlayerRow
