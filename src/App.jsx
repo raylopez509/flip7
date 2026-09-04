@@ -4,6 +4,7 @@ import PlayerRow from "./PlayerRow";
 import ScoreboardButton from "./ScoreboardButton";
 import ConfirmModal from "./ConfirmModal";
 import AddPlayerModal from "./AddPlayerModal";
+
 import { createPortal } from "react-dom";
 
 function App() {
@@ -31,8 +32,10 @@ function App() {
   const [players, setPlayers] = useState(
     savedPlayers ? JSON.parse(savedPlayers) : [],
   );
-  const [showConfirmModal, setConfirmModal] = useState(false);
-  const [showAddPlayerModal, setShowAddPlayerModal] = useState(false);
+
+  const [showModal, setShowModal] = useState(null);
+
+  const statusBar = document.getElementById("status-bar");
 
   useEffect(() => {
     localStorage.setItem("players", JSON.stringify(players));
@@ -219,14 +222,14 @@ function App() {
         &gt;
       </button>
 
-      <button onClick={() => setShowAddPlayerModal(true)}>Add Player</button>
-      {showAddPlayerModal &&
+      <button onClick={() => setShowModal("addPlayer")}>Add Player</button>
+      {showModal === "addPlayer" &&
         createPortal(
           <AddPlayerModal
-            onClose={() => setShowAddPlayerModal(false)}
+            onClose={() => setShowModal(null)}
             handleAddNewPlayer={handleAddNewPlayer}
           ></AddPlayerModal>,
-          document.body,
+          statusBar,
         )}
 
       <ScoreboardButton
@@ -234,19 +237,21 @@ function App() {
         getAllPlayerRoundScores={getAllPlayerRoundScores}
       ></ScoreboardButton>
 
-      <button onClick={() => setConfirmModal(true)}>Reset</button>
-      {showConfirmModal &&
+      <button onClick={() => setShowModal("resetScores")}>Reset</button>
+      {showModal === "resetScores" &&
         createPortal(
           <ConfirmModal
             message="Are you sure you want to reset the scores?"
             onConfirm={() => {
               resetScores();
-              setConfirmModal(false);
+              setShowModal(null);
             }}
-            onClose={() => setConfirmModal(false)}
+            onClose={() => setShowModal(null)}
           ></ConfirmModal>,
-          document.body,
+          statusBar,
         )}
+
+      <div id="status-bar"></div>
 
       {players.map((player) => (
         <PlayerRow
@@ -258,6 +263,9 @@ function App() {
           deletePlayer={deletePlayer}
           getRoundScore={getRoundScore}
           getFinalScore={getFinalScore}
+          showModal={showModal}
+          setShowModal={setShowModal}
+          statusBar={statusBar}
         ></PlayerRow>
       ))}
     </>
