@@ -107,7 +107,6 @@ function App() {
     if (newRound > maxRounds) {
       setMaxRounds(newRound);
     }
-    console.log(players);
   };
 
   const prevRound = () => {
@@ -184,14 +183,26 @@ function App() {
     }
   };
 
+  // const getAllRoundScores = (player) => {
+  //   let scores = [];
+  //   scores.push(player.name);
+  //   Object.keys(player.round).forEach((roundNum) => {
+  //     scores.push(getRoundScore(player, roundNum));
+  //   });
+  //   scores.push(getFinalScore(player));
+  //   return scores;
+  // };
   const getAllRoundScores = (player) => {
-    let scores = [];
-    scores.push(player.name);
+    let playerScores = {};
+    playerScores.id = player.id;
+    playerScores.name = player.name;
+    let roundScores = [];
     Object.keys(player.round).forEach((roundNum) => {
-      scores.push(getRoundScore(player, roundNum));
+      roundScores.push(getRoundScore(player, roundNum));
     });
-    scores.push(getFinalScore(player));
-    return scores;
+    playerScores.scores = roundScores;
+    playerScores.total = getFinalScore(player);
+    return playerScores;
   };
 
   const getRoundsArray = () => {
@@ -201,13 +212,12 @@ function App() {
     }
     return rounds;
   };
-
   const getAllPlayerRoundScores = () => {
     let scores = [];
     players.forEach((player) => {
       scores.push(getAllRoundScores(player));
     });
-    scores.sort((a, b) => b.at(-1) - a.at(-1));
+    scores.sort((a, b) => b.total - a.total);
     return scores;
   };
 
