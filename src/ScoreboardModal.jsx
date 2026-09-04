@@ -17,10 +17,12 @@ export default function ScoreboardModal({
         </thead>
         <tbody>
           {getAllPlayerRoundScores().map((player) => (
-            <tr key={player[0]}>
-              {player.map((data) => (
-                <td>{data}</td>
+            <tr key={player.id}>
+              <td>{player.name}</td>
+              {player.scores.map((data, index) => (
+                <td key={index}>{data}</td>
               ))}
+              <td>{player.total}</td>
             </tr>
           ))}
         </tbody>
