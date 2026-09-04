@@ -8,19 +8,22 @@ export default function PlayerRow({
   handleModifierChanges,
   deletePlayer,
   getRoundScore,
-  getFinalScore
+  getFinalScore,
+  showModal,
+  setShowModal,
+  statusBar,
 }) {
   const currentRoundData = player.round[currentRound];
   const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   const modifiers = [
-    { key: 'plus2', label: '+2' },
-    { key: 'plus4', label: '+4' },
-    { key: 'plus6', label: '+6' },
-    { key: 'plus8', label: '+8' },
-    { key: 'plus10', label: '+10' },
-    { key: 'times2', label: 'x2' },
+    { key: "plus2", label: "+2" },
+    { key: "plus4", label: "+4" },
+    { key: "plus6", label: "+6" },
+    { key: "plus8", label: "+8" },
+    { key: "plus10", label: "+10" },
+    { key: "times2", label: "x2" },
   ];
-  const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // const getFinalScore = () => {
   //   let score = 0;
@@ -56,7 +59,9 @@ export default function PlayerRow({
 
   return (
     <div className="player-row">
-      <div>{player.name}: {getFinalScore(player)}</div>
+      <div>
+        {player.name}: {getFinalScore(player)}
+      </div>
       {numbers.map((n) => (
         <label className="checkbox-card" key={n}>
           <input
@@ -80,20 +85,46 @@ export default function PlayerRow({
           <span className="box">{label}</span>
         </label>
       ))}
-      <button onClick={() => setShowModal(true)}>Delete</button>
-      {
-        showModal && createPortal(
+
+      <button
+        onClick={() => {
+          setShowDeleteModal(true);
+          setShowModal(`deletePlayer-${player.id}`);
+        }}
+      >
+        Delete
+      </button>
+      {showModal === `deletePlayer-${player.id}` &&
+        showDeleteModal &&
+        createPortal(
           <ConfirmModal
             message={`Are you sure you want to delete ${player.name}?`}
             onConfirm={() => {
               deletePlayer(player.id);
-              setShowModal(false);
+              setShowModal(null);
+              setShowDeleteModal(false);
             }}
-            onClose={() => setShowModal(false)}
+            onClose={() => {
+              setShowModal(null);
+              setShowDeleteModal(false);
+            }}
           ></ConfirmModal>,
-          document.body
-        )
-      }
+          statusBar,
+        )}
+      {/* <button onClick={() => setShowModal("deletePlayer")}>Delete</button>
+      {showModal === "deletePlayer" &&
+        createPortal(
+          <ConfirmModal
+            message={`Are you sure you want to delete ${player.name}?`}
+            onConfirm={() => {
+              deletePlayer(player.id);
+              setShowModal(null);
+            }}
+            onClose={() => setShowModal(null)}
+          ></ConfirmModal>,
+          statusBar,
+        )} */}
+
       <div>{getRoundScore(player, currentRound)}</div>
     </div>
   );
