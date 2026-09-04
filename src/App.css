@@ -22,7 +22,7 @@ input:checked + .box {
 .number-0:checked + .box {
   background-color: #f5e3bd;
   color: black;
-  border-color:#f5e3bd;
+  border-color: #f5e3bd;
 }
 .number-1:checked + .box {
   background-color: #cab09d;
@@ -85,3 +85,6 @@ input:checked + .box {
   border-color: #998776;
 }
 
+.player-row {
+  border: black 1px solid;
+}
