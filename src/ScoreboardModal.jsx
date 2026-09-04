@@ -6,20 +6,24 @@ export default function ScoreboardModal({
   return (
     <>
       <table>
-        <tr>
-          <th>Name</th>
-          {getRoundsArray().map((round) => (
-            <th>{round}</th>
-          ))}
-          <th>Total</th>
-        </tr>
-        {getAllPlayerRoundScores().map((player) => (
+        <thead>
           <tr>
-            {player.map((data) => (
-              <td>{data}</td>
+            <th>Name</th>
+            {getRoundsArray().map((round) => (
+              <th key={"round" + round}>{round}</th>
             ))}
+            <th>Total</th>
           </tr>
-        ))}
+        </thead>
+        <tbody>
+          {getAllPlayerRoundScores().map((player) => (
+            <tr key={player[0]}>
+              {player.map((data) => (
+                <td>{data}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
       </table>
       <button onClick={onClose}>Close</button>
     </>
