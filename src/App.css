@@ -88,3 +88,12 @@ input:checked + .box {
 .player-row {
   border: black 1px solid;
 }
+
+table {
+  border-collapse: collapse;
+}
+table,
+th,
+td {
+  border: 1px solid black;
+}
